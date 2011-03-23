@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+
+<hibernate-mapping package="dst1.model">
+
+	<class name="Computer">
+		<id name="id">
+			<generator class="increment" />
+		</id>
+		<property name="name" unique="true" not-null="true" />
+		<property name="CPUs" />
+		<property name="location" />
+		<property name="creation" />
+		<property name="lastUpdate" />
+		<many-to-one name="controlledBy" column="controlledBy_id">
+		</many-to-one>
+		<set name="running">
+			<key column="Computer_id"></key>
+			<many-to-many class="Execution" column="runsOn"></many-to-many>
+		</set>
+	</class>
+
+</hibernate-mapping>

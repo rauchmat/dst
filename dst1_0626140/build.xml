@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project name="dst1" default="compile" basedir=".">
+
+    <target name="init" description="Initialize settings.">
+        <property name="src.dir" value="src"/>
+        <property name="build.dir" value="build"/>
+        <property name="lib.dir" value="lib"/>
+	  	<property name="zip.name" value="dst1_submission.zip"/>
+        
+        <path id="project.classpath" >
+            <fileset dir="${lib.dir}">
+                <include name="**/*.jar"/>
+            </fileset>
+            <pathelement location="${build.dir}"/>
+        </path>
+    </target>
+
+    <!-- create the zip file: -->
+    <target name="zip" depends="clean">
+        <delete file="${zip.name}"/>
+        <zip destfile="${zip.name}">
+            <fileset dir="${basedir}"/>
+        </zip>
+    </target>
+    
+    <target name="compile" depends="init" description="Compile project.">
+        <mkdir dir="${build.dir}"/>
+        <javac srcdir="${src.dir}" destdir="${build.dir}" classpathref="project.classpath" debug="true" deprecation="true" includeantruntime="false"/>
+        <copy todir="${build.dir}">
+            <fileset dir="${src.dir}" excludes="**/*.java"/>
+        </copy>
+    </target>
+    
+    <target name="run" depends="compile" description="Run project.">
+        <java classname="dst1.Main" fork="true" classpathref="project.classpath"/>
+    </target>
+    
+    <target name="clean" depends="init" description="Clean build products.">
+        <delete dir="${build.dir}"/>
+    </target>
+</project>
