@@ -6,25 +6,29 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 
 @Entity
+@NamedQuery(name = "allComputersInVienna", query = "select comp from Computer as comp "
+	+ "left join fetch comp.running exec fetch all properties "
+	+ "where comp.location like 'AUT-VIE%'")
 public class Execution {
 
 	@Id
 	@GeneratedValue
 	private Long id;
-	@Column(nullable = false)
 	private Date start;
 	private Date end;
 	@Column(nullable = false)
 	private JobStatus status;
-	@ManyToMany
+	@ManyToMany(mappedBy = "running")
 	private Set<Computer> runsOn = new HashSet<Computer>();
-	@OneToOne(optional=false)
+	@OneToOne(optional = false, mappedBy = "executesIn", fetch = FetchType.EAGER)
 	private Job executes;
 
 	public Long getId() {
@@ -73,6 +77,12 @@ public class Execution {
 
 	public Job getExecutes() {
 		return executes;
+	}
+
+	@Override
+	public String toString() {
+		return "Execution [id=" + id + ", start=" + start + ", end=" + end
+				+ ", status=" + status + "]";
 	}
 
 }

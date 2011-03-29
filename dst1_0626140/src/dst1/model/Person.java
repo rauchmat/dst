@@ -1,25 +1,20 @@
 package dst1.model;
 
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 
 @Entity
-@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
-@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "accountNo",
-		"bankCode" }))
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
+//@DiscriminatorColumn(name = "type", discriminatorType = DiscriminatorType.STRING)
 public abstract class Person {
 
-	@Id
-	@GeneratedValue
+	@Id()
+	@GeneratedValue(strategy = GenerationType.TABLE)
 	private Long id;
 	private String firstname;
 	private String lastname;

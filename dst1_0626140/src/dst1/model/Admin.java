@@ -23,7 +23,6 @@ public class Admin extends Person {
 	@Override
 	public String toString() {
 		return "User [id=" + getId() + ", firstname=" + getFirstname()
-				+ ", lastname=" + getLastname() + ", maintains=" + maintains
-				+ "]";
+				+ ", lastname=" + getLastname() + "]";
 	}
 }

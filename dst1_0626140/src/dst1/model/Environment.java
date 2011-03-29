@@ -9,6 +9,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import org.hibernate.annotations.IndexColumn;
+
 @Entity
 public class Environment {
 	@Id
@@ -17,6 +19,7 @@ public class Environment {
 	@Column(nullable = false)
 	private String workflow;
 	@ElementCollection
+	@IndexColumn(name="position")
 	private List<String> params = new ArrayList<String>();
 
 	public Long getId() {
@@ -41,6 +44,12 @@ public class Environment {
 
 	public void setParams(List<String> params) {
 		this.params = params;
+	}
+
+	@Override
+	public String toString() {
+		return "Environment [id=" + id + ", workflow=" + workflow + ", params="
+				+ params + "]";
 	}
 
 }

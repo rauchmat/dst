@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,7 +22,7 @@ public class Grid {
 	private String location;
 	@Column(nullable = false)
 	private BigDecimal costsPerCPUMinute;
-	@OneToMany(mappedBy = "grid")
+	@OneToMany(mappedBy = "grid", cascade = { CascadeType.REMOVE })
 	private Set<Membership> memberships = new HashSet<Membership>();
 	@OneToMany(mappedBy = "managedBy")
 	private Set<Cluster> manages = new HashSet<Cluster>();
@@ -77,7 +78,7 @@ public class Grid {
 	@Override
 	public String toString() {
 		return "Grid [id=" + id + ", name=" + name + ", location=" + location
-				+ ", costsPerCPUMinute=" + costsPerCPUMinute + ", manages="
-				+ manages + ", memberships=" + memberships + "]";
+				+ ", costsPerCPUMinute=" + costsPerCPUMinute + ", memberships="
+				+ memberships + "]";
 	}
 }

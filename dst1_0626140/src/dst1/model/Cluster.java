@@ -4,6 +4,7 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -21,15 +22,15 @@ public class Cluster {
 	private String name;
 	private Date lastService;
 	private Date nextService;
-	@ManyToOne(optional=false)
+	@ManyToOne(optional = false)
 	private Grid managedBy;
-	@ManyToOne(optional=false)
+	@ManyToOne(optional = false)
 	private Admin maintainedBy;
-	@OneToMany(mappedBy="controlledBy")
+	@OneToMany(mappedBy = "controlledBy")
 	private Set<Computer> controls = new HashSet<Computer>();
-	@ManyToMany(mappedBy = "partOf")
+	@ManyToMany(cascade = { CascadeType.REMOVE })
 	private Set<Cluster> consistsOf = new HashSet<Cluster>();
-	@ManyToMany
+	@ManyToMany(mappedBy = "consistsOf")
 	private Set<Cluster> partOf = new HashSet<Cluster>();
 
 	public Long getId() {
@@ -107,10 +108,9 @@ public class Cluster {
 	@Override
 	public String toString() {
 		return "Cluster [id=" + id + ", name=" + name + ", lastService="
-				+ lastService + ", nextService=" + nextService + ", controls="
-				+ controls + ", maintainedBy=" + maintainedBy + ", managedBy="
-				+ managedBy + ", partOf=" + partOf + ", consistsOf="
-				+ consistsOf + "]";
+				+ lastService + ", nextService=" + nextService
+				+ ", maintainedBy=" + maintainedBy + ", managedBy=" + managedBy
+				+ ", consistsOf=" + consistsOf + "]";
 	}
 
 }

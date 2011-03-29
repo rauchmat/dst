@@ -3,24 +3,47 @@ package dst1.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+import javax.persistence.NamedQueries;
+
+import org.hibernate.annotations.Index;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = { "accountNo",
+		"bankCode" }))
+@NamedQueries( {
+		@NamedQuery(name = "usersByGridAndJobCount", query = "select user from User as user "
+				+ "inner join user.memberships membership "
+				+ "inner join user.creates job "
+				+ "where membership.grid.name like :name "
+				+ "group by user "
+				+ "having count(job) >= :jobs"),
+		@NamedQuery(name = "mostActiveUser", query = "select user from User as user "
+				+ "inner join user.creates job "
+				+ "group by user "
+				+ "having count(job) >= all (select count(job1) from User as user1 "
+				+ "							 inner join user1.creates job1 "
+				+ "							 group by user1) ") })
 public class User extends Person {
 
-//	@Column(nullable = false)
+	@Column(nullable = false)
+	@Index(name = "idx_username")
 	private String username;
-//	@Column(nullable = false)
+	@Column(nullable = false)
 	private String password;
 	@Column(length = 11)
 	private String accountNo;
 	@Column(length = 5)
 	private String bankCode;
-	@OneToMany(mappedBy = "createdBy")
+	@OneToMany(mappedBy = "createdBy", cascade = { CascadeType.REMOVE })
 	private Set<Job> creates = new HashSet<Job>();
-	@OneToMany(mappedBy = "user")
+	@OneToMany(mappedBy = "user", cascade = { CascadeType.REMOVE })
 	private Set<Membership> memberships = new HashSet<Membership>();
 
 	public String getUsername() {
@@ -76,8 +99,7 @@ public class User extends Person {
 		return "User [id=" + getId() + ", firstname=" + getFirstname()
 				+ ", lastname=" + getLastname() + ", accountNo=" + accountNo
 				+ ", bankCode=" + bankCode + ", username=" + username
-				+ ", password=" + password + ", address=" + getAddress()
-				+ ", creates=" + creates + ", memberships=" + memberships + "]";
+				+ ", password=" + password + ", address=" + getAddress() + "]";
 	}
 
 }

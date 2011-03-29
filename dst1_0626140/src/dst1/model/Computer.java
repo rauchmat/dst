@@ -4,24 +4,41 @@ import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.EntityListeners;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import javax.validation.constraints.Past;
+import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
+import dst1.listener.EntityListener;
+import dst1.validator.CPUs;
+
+@EntityListeners(EntityListener.class)
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = "name"))
 public class Computer {
 
 	private Long id;
 	@Column(nullable = false)
+	@Size(min = 5, max = 25)
 	private String name;
 	@Column(nullable = false)
+	@CPUs(min = 4, max = 8)
 	private Integer CPUs;
 	@Column(nullable = false)
+	@Pattern(regexp = "[A-Z]{3}\\-[A-Z]{3}@\\d{4}")
 	private String location;
 	@Column(nullable = false)
+	@Past
 	private Date creation;
+	@Past
+	@Column(nullable = false)
 	private Date lastUpdate;
+	@ManyToMany(cascade = { CascadeType.ALL })
 	private Set<Execution> running = new HashSet<Execution>();
 	@ManyToOne(optional = false)
 	private Cluster controlledBy;
@@ -94,8 +111,7 @@ public class Computer {
 	public String toString() {
 		return "Computer [id=" + id + ", name=" + name + ", creation="
 				+ creation + ", lastUpdate=" + lastUpdate + ", CPUs=" + CPUs
-				+ ", location=" + location + ", controlledBy=" + controlledBy
-				+ ", running=" + running + "]";
+				+ ", location=" + location + ", running=" + running
+				+ ", controlledBy=" + controlledBy + "]";
 	}
-
 }

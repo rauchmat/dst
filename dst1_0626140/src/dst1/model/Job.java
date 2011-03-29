@@ -7,6 +7,8 @@ import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 
+import javax.persistence.CascadeType;
+
 @Entity
 public class Job {
 	@Id
@@ -14,9 +16,9 @@ public class Job {
 	private Long id;
 	@Column(nullable = false)
 	private Boolean isPaid;
-	@OneToOne(mappedBy = "executes", optional=false)
+	@OneToOne(optional = false, cascade = { CascadeType.ALL })
 	private Execution executesIn;
-	@OneToOne(optional = false)
+	@OneToOne(optional = false, cascade = { CascadeType.ALL })
 	private Environment needs;
 	@ManyToOne(optional = false)
 	private User createdBy;
@@ -67,5 +69,12 @@ public class Job {
 
 	public User getCreatedBy() {
 		return createdBy;
+	}
+
+	@Override
+	public String toString() {
+		return "Job [id=" + id + ", isPaid=" + isPaid + ", createdBy="
+				+ createdBy + ", needs=" + needs + ", executesIn=" + executesIn
+				+ "]";
 	}
 }

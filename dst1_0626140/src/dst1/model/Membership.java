@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 
 @Entity
 public class Membership {
+
 	@Embeddable
 	public static class Id implements Serializable {
 
@@ -112,7 +113,6 @@ public class Membership {
 	@Override
 	public String toString() {
 		return "Membership [id=" + id + ", registration=" + registration
-				+ ", discount=" + discount + ", grid=" + grid.getId()
-				+ ", user=" + user.getId() + "]";
+				+ ", discount=" + discount + "]";
 	}
 }
