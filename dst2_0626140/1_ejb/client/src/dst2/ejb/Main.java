@@ -1,5 +1,7 @@
 package dst2.ejb;
 
+import java.math.BigDecimal;
+
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
@@ -23,6 +25,16 @@ public class Main {
 		logger.info("Adding grid for tests...");
 		testing.addGrid();
 		logger.info("Added grid for tests.");
+		
+		logger.info("Looking up GeneralManagementBean...");
+		GeneralManagement generalManagement = (GeneralManagement) InitialContext.doLookup("java:global/dst2_1/GeneralManagementBean");
+		logger.info("Found and wired GeneralManagementBean.");
+		
+		logger.info("Adding some price steps...");
+		generalManagement.addPriceStep(100, BigDecimal.valueOf(30));
+		generalManagement.addPriceStep(1000, BigDecimal.valueOf(15));
+		generalManagement.addPriceStep(5000, BigDecimal.valueOf(5));
+		logger.info("Price steps added.");
 	}
 
 }
