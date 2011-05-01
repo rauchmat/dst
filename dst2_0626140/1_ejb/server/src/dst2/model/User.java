@@ -6,24 +6,16 @@ import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
-import dst2.model.Job;
-import dst2.model.Membership;
-import dst2.model.Person;
-
 @Entity(name = "User")
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"accountNo", "bankCode" }))
-@NamedQuery(name = User.USER_BY_CREDENTIALS, query = "select user from User "
-		+ "where username like :username "
-		+ "and password like :password ")
 public class User extends Person {
 	
-	public static final String USER_BY_CREDENTIALS = "userByCredentials";
+	public static final String USER_BY_CREDENTIALS = "usersByCredentials";
 
 	@Column(name = "username", nullable = false)
 	private String username;

@@ -45,6 +45,8 @@
 				<!-- set the classes to be included for your client.-->
 				<include name="dst2/ejb/Testing.class" />
 				<include name="dst2/ejb/GeneralManagement.class" />
+				<include name="dst2/ejb/JobManagement.class" />
+				<include name="dst2/ejb/exceptions/*.class" />
 			</fileset>
 		</jar>
 	</target>
