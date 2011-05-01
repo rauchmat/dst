@@ -1,4 +1,17 @@
 .metadata/
+dst1_0626140/.classpath
+dst1_0626140/.project
 dst1_0626140/bin/
 dst1_0626140/build/
 dst1_0626140/dist/
+dst2_0626140/.classpath
+dst2_0626140/.project
+dst2_0626140/bin/
+dst2_0626140/build/
+dst2_0626140/dist/
+dst2_0626140/1_ejb/client/bin/
+dst2_0626140/1_ejb/client/build/
+dst2_0626140/1_ejb/client/dist/
+dst2_0626140/1_ejb/server/bin/
+dst2_0626140/1_ejb/server/build/
+dst2_0626140/1_ejb/server/dist/
