@@ -35,7 +35,7 @@ public class TestingBean implements Testing {
 			"yyyy-MM-dd hh:mm:ss");
 
 	@PersistenceContext
-	EntityManager em;
+	private EntityManager em;
 
 	public TestingBean() {
 	}
