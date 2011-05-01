@@ -8,6 +8,11 @@
 			<query>select user from User user where user.username like :username and user.password like :password</query>
 		</named-query>
 	</entity>
+	<entity class="dst2.model.PriceStep">
+		<named-query name="all">
+			<query>select step from PriceStep step</query>
+		</named-query>
+	</entity>
 	<entity class="dst2.model.Computer" name="Computer">
 		<table name="computer">
 			<unique-constraint>

@@ -18,9 +18,6 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Root;
 
 import dst2.model.PriceStep;
 
@@ -34,14 +31,10 @@ public class PriceManagementBean implements PriceManagement {
 	private EntityManager em;
 	private SortedSet<PriceStep> steps;
 
+	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void initialize() {
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<PriceStep> query = criteriaBuilder
-				.createQuery(PriceStep.class);
-		Root<PriceStep> priceStep = query.from(PriceStep.class);
-		query.select(priceStep);
-		List<PriceStep> steps = em.createQuery(query).getResultList();
+		List<PriceStep> steps = em.createNamedQuery("all").getResultList();
 		this.steps = new TreeSet<PriceStep>(steps);
 	}
 
