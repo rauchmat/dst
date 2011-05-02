@@ -5,12 +5,29 @@
 	version="2.0">
 	<entity class="dst2.model.User">
 		<named-query name="usersByCredentials">
-			<query>select user from User user where user.username like :username and user.password like :password</query>
+			<query>
+				select user from User user 
+			   	where user.username like :username 
+			   	and user.password like :password
+			</query>
 		</named-query>
 	</entity>
 	<entity class="dst2.model.PriceStep">
 		<named-query name="all">
 			<query>select step from PriceStep step</query>
+		</named-query>
+	</entity>
+	<entity class="dst2.model.Computer">
+		<named-query name="freeComputersByGrid">
+			<query>
+				select comp from Computer comp
+				inner join comp.controlledBy cluster
+				inner join cluster.managedBy grid
+				where grid.id = :gridId
+				and not exists (select exec from Execution
+								where exec.runsOn = comp
+								and exec.status in (RUNNING, SCHEDULED))
+			</query>
 		</named-query>
 	</entity>
 	<entity class="dst2.model.Computer" name="Computer">

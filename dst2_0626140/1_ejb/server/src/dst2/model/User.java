@@ -14,8 +14,6 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "user", uniqueConstraints = @UniqueConstraint(columnNames = {
 		"accountNo", "bankCode" }))
 public class User extends Person {
-	
-	public static final String USER_BY_CREDENTIALS = "usersByCredentials";
 
 	@Column(name = "username", nullable = false)
 	private String username;
