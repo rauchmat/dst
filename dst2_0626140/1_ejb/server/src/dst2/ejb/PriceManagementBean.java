@@ -34,7 +34,7 @@ public class PriceManagementBean implements PriceManagement {
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void initialize() {
-		List<PriceStep> steps = em.createNamedQuery("all").getResultList();
+		List<PriceStep> steps = em.createNamedQuery("allPriceSteps").getResultList();
 		this.steps = new TreeSet<PriceStep>(steps);
 	}
 

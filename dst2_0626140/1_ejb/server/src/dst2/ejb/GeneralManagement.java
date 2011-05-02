@@ -7,4 +7,5 @@ import javax.ejb.Remote;
 @Remote
 public interface GeneralManagement {
 	void addPriceStep(int numberOfHistoricalJobs, BigDecimal price);
+	
 }

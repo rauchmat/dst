@@ -13,7 +13,7 @@
 		</named-query>
 	</entity>
 	<entity class="dst2.model.PriceStep">
-		<named-query name="all">
+		<named-query name="allPriceSteps">
 			<query>select step from PriceStep step</query>
 		</named-query>
 	</entity>
@@ -26,7 +26,15 @@
 				where grid.id = :gridId
 				and not exists (select exec from Execution
 								where exec.runsOn = comp
-								and exec.status in (RUNNING, SCHEDULED))
+								and exec.start is not null and exec.end is null)
+			</query>
+		</named-query>
+	</entity>
+	<entity class="dst2.model.Execution">
+		<named-query name="notFinishedExecutions">
+			<query>
+				select exec from Execution exec
+				where exec.start is not null and exec.end is null
 			</query>
 		</named-query>
 	</entity>
