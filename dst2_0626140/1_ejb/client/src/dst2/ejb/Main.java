@@ -1,7 +1,6 @@
 package dst2.ejb;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -66,10 +65,10 @@ public class Main {
 			bailOut("InvalidCredentialsException occured unexpectedly.");
 		}
 		
-		logger.info("Creating a valid job assignment...");
-		jobManagement.add(1, 4, "map-reduce", new ArrayList<String>());
-		jobManagement.add(1, 4, "map-reduce", new ArrayList<String>());
-		logger.info("Assigned " + jobManagement.get(1) + " jobs to grid 1");
+//		logger.info("Creating a valid job assignment...");
+//		jobManagement.add(1, 4, "map-reduce", new ArrayList<String>());
+//		jobManagement.add(1, 4, "map-reduce", new ArrayList<String>());
+//		logger.info("Assigned " + jobManagement.get(1) + " jobs to grid 1");
 	}
 	
 	private static void bailOut(String message) {
