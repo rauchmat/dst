@@ -99,7 +99,7 @@ public class JobManagementBean implements JobManagement {
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void submit() throws NotLoggedInException {
+	public void submit() throws NotLoggedInException, InvalidAssignmentException {
 		if (user == null)
 			throw new NotLoggedInException();
 

@@ -20,5 +20,5 @@ public interface JobManagement {
 
 	void clear(long gridId);
 
-	void submit() throws NotLoggedInException;
+	void submit() throws NotLoggedInException, InvalidAssignmentException;
 }
