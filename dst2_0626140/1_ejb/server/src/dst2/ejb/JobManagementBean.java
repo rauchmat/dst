@@ -14,6 +14,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.log4j.LogManager;
+import org.apache.log4j.Logger;
+
 import dst2.ejb.exceptions.InvalidAssignmentException;
 import dst2.ejb.exceptions.InvalidCredentialsException;
 import dst2.ejb.exceptions.NotLoggedInException;
@@ -27,6 +30,8 @@ import dst2.model.User;
 @Stateful
 public class JobManagementBean implements JobManagement {
 
+	private static Logger logger = LogManager.getLogger(JobManagementBean.class);
+	
 	@PersistenceContext
 	private EntityManager em;
 	private User user;
@@ -66,12 +71,12 @@ public class JobManagementBean implements JobManagement {
 		tempJob.setWorkflow(workflow);
 		tempJob.setParams(parameters);
 
-		System.out.println("tempJobs: " + tempJobs.size());
+		logger.info("tempJobs: " + tempJobs.size());
 		List<Computer> reallyFreeComputers = new LinkedList<Computer>();
 		for (Computer freeComputer : freeComputers) {
 			boolean isReallyFree = true;
 			for (TemporaryJob temporaryJob : tempJobs) {
-				System.out.println("temporaryJob.getComputers(): " + temporaryJob.getComputers().size());
+				logger.info("temporaryJob.getComputers(): " + temporaryJob.getComputers().size());
 				if (temporaryJob.getComputers().contains(freeComputer)) {
 					isReallyFree = false;
 					break;
@@ -85,9 +90,9 @@ public class JobManagementBean implements JobManagement {
 		boolean isAssignmentValid = false;
 		int usedCPUs = 0;
 		
-		System.out.println("new assignment...");
+		logger.info("new assignment...");
 		for (Computer freeComputer : reallyFreeComputers) {
-			System.out.println("really free: " + freeComputer.getId());
+			logger.info("really free: " + freeComputer.getId());
 			tempJob.getComputers().add(freeComputer);
 			usedCPUs += freeComputer.getCPUs();
 
@@ -97,7 +102,7 @@ public class JobManagementBean implements JobManagement {
 			}
 		}
 
-		System.out.println("assignment valid: " + isAssignmentValid);
+		logger.info("assignment valid: " + isAssignmentValid);
 		if (!isAssignmentValid)
 			throw new InvalidAssignmentException();
 

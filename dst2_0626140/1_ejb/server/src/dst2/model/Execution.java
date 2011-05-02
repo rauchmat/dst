@@ -6,6 +6,8 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -29,6 +31,7 @@ public class Execution {
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "end")
 	private Date end;
+	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private JobStatus status;
 	@ManyToMany(mappedBy = "running")
