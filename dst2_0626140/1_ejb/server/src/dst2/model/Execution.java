@@ -15,10 +15,6 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import dst2.model.Computer;
-import dst2.model.Job;
-import dst2.model.JobStatus;
-
 @Entity(name = "Execution")
 @Table(name = "execution")
 public class Execution {

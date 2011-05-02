@@ -16,4 +16,10 @@ public class GeneralManagementBean implements GeneralManagement {
 		priceManagement.addStep(numberOfHistoricalJobs, price);
 	}
 
+	@Override
+	public String getTotalBill(String username) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }

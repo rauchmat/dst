@@ -24,7 +24,7 @@
 				inner join comp.controlledBy cluster
 				inner join cluster.managedBy grid
 				where grid.id = :gridId
-				and not exists (select exec from Execution
+				and not exists (select exec from Execution exec
 								where exec.runsOn = comp
 								and exec.start is not null and exec.end is null)
 			</query>
@@ -66,18 +66,8 @@
 				<column name="lastUpdate" />
 				<temporal>DATE</temporal>
 			</basic>
-			<many-to-one name="controlledBy" optional="false">
-				<join-column name="controlledBy" />
-			</many-to-one>
-			<many-to-many name="running">
-				<join-table name="computer_execution">
-					<join-column name="running_id" />
-					<inverse-join-column name="runsOn_id" />
-				</join-table>
-				<cascade>
-					<cascade-all />
-				</cascade>
-			</many-to-many>
+			<many-to-one name="controlledBy" optional="false" />
+			<many-to-many name="running"/>
 		</attributes>
 	</entity>
 </entity-mappings>

@@ -9,18 +9,12 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import dst2.model.Admin;
-import dst2.model.Computer;
-import dst2.model.Grid;
 
 @Entity(name = "Cluster")
 @Table(name="cluster")
@@ -38,16 +32,12 @@ public class Cluster {
 	@Column(name = "nextService")
 	private Date nextService;
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "managedBy_id")
 	private Grid managedBy;
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "maintainedBy_id")
 	private Admin maintainedBy;
 	@OneToMany(mappedBy = "controlledBy")
 	private Set<Computer> controls = new HashSet<Computer>();
 	@ManyToMany(cascade = { CascadeType.REMOVE })
-	@JoinColumn(name = "consistsOf")
-	@JoinTable(name = "cluster_cluster", joinColumns = @JoinColumn(name = "consistsOf_id"), inverseJoinColumns = @JoinColumn(name = "partOf_id"))
 	private Set<Cluster> consistsOf = new HashSet<Cluster>();
 	@ManyToMany(mappedBy = "consistsOf")
 	private Set<Cluster> partOf = new HashSet<Cluster>();

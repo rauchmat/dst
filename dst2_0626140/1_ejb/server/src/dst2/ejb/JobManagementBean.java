@@ -2,10 +2,10 @@ package dst2.ejb;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
@@ -29,7 +29,7 @@ public class JobManagementBean implements JobManagement {
 	@PersistenceContext
 	private EntityManager em;
 	private User user;
-	private Map<Long, List<Job>> jobsByGrid;
+	private Map<Long, TemporaryJobs> jobsByGrid;
 
 	@SuppressWarnings("unchecked")
 	@Override
@@ -45,7 +45,7 @@ public class JobManagementBean implements JobManagement {
 					"Username or password are incorrect.");
 		}
 		this.user = users.get(0);
-		this.jobsByGrid = new HashMap<Long, List<Job>>();
+		this.jobsByGrid = new HashMap<Long, TemporaryJobs>();
 	}
 
 	@SuppressWarnings("unchecked")
@@ -58,9 +58,11 @@ public class JobManagementBean implements JobManagement {
 		List<Computer> freeComputers = query.getResultList();
 		int usedCPUs = 0;
 		boolean isAssignmentValid = false;
-		Execution execution = new Execution();
+		TemporaryJob tempJob = new TemporaryJob();
+		tempJob.setWorkflow(workflow);
+		tempJob.setParams(parameters);
 		for (Computer freeComputer : freeComputers) {
-			execution.getRunsOn().add(freeComputer);
+			tempJob.getComputers().add(freeComputer);
 			usedCPUs += freeComputer.getCPUs();
 
 			if (usedCPUs >= numberOfCPUs) {
@@ -72,21 +74,16 @@ public class JobManagementBean implements JobManagement {
 		if (!isAssignmentValid)
 			throw new InvalidAssignmentException();
 
-		Job job = new Job();
-		job.setNeeds(new Environment());
-		job.getNeeds().setWorkflow(workflow);
-		job.getNeeds().setParams(parameters);
-		job.setExecutesIn(execution);
-
 		if (!jobsByGrid.containsKey(gridId))
-			jobsByGrid.put(gridId, new LinkedList<Job>());
-		jobsByGrid.get(gridId).add(job);
+			jobsByGrid.put(gridId, new TemporaryJobs());
+		jobsByGrid.get(gridId).add(tempJob);
 	}
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void clear(long gridId) {
-		jobsByGrid.remove(gridId);
+		if (jobsByGrid.containsKey(gridId))
+			jobsByGrid.remove(gridId);
 	}
 
 	@Override
@@ -99,21 +96,38 @@ public class JobManagementBean implements JobManagement {
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void submit() throws NotLoggedInException, InvalidAssignmentException {
+	public void submit() throws NotLoggedInException,
+			InvalidAssignmentException {
 		if (user == null)
 			throw new NotLoggedInException();
 
 		for (Long gridId : jobsByGrid.keySet()) {
-			for (Job job : jobsByGrid.get(gridId)) {
-				//TODO: check if assignment still valid
+			for (TemporaryJob tempJob : jobsByGrid.get(gridId)) {
+				// TODO: check if assignment still valid
+				
+				Job job = new Job();
+				job.setNeeds(new Environment());
+				job.getNeeds().setWorkflow(tempJob.getWorkflow());
+				job.getNeeds().setParams(tempJob.getParams());
+				job.setExecutesIn(new Execution());
 				job.getExecutesIn().setStart(new Date());
 				job.getExecutesIn().setStatus(JobStatus.SCHEDULED);
+				for (Computer computer : tempJob.getComputers()) {
+					computer = em.merge(computer);
+					computer.getRunning().add(job.getExecutesIn());
+				}
 				job.setCreatedBy(user);
+				job.setIsPaid(false);
+	
 				em.persist(job);
 			}
 		}
-		
-		//TODO: discard
+
+		discard();
+	}
+
+	@Remove
+	public void discard() {
 	}
 
 }

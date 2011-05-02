@@ -56,5 +56,4 @@ public class Environment {
 		return "Environment [id=" + id + ", workflow=" + workflow + ", params="
 				+ params + "]";
 	}
-
 }
