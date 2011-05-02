@@ -2,13 +2,12 @@ package dst2.ejb;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -50,18 +49,43 @@ public class JobManagementBean implements JobManagement {
 
 	@SuppressWarnings("unchecked")
 	@Override
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void add(long gridId, int numberOfCPUs, String workflow,
 			List<String> parameters) throws InvalidAssignmentException {
 		Query query = em.createNamedQuery("freeComputersByGrid");
 		query.setParameter("gridId", gridId);
 		List<Computer> freeComputers = query.getResultList();
-		int usedCPUs = 0;
-		boolean isAssignmentValid = false;
+
+		TemporaryJobs tempJobs = null;
+		if (!jobsByGrid.containsKey(gridId))
+			tempJobs = new TemporaryJobs();
+		else
+			tempJobs = jobsByGrid.get(gridId);
 		TemporaryJob tempJob = new TemporaryJob();
 		tempJob.setWorkflow(workflow);
 		tempJob.setParams(parameters);
+
+		System.out.println("tempJobs: " + tempJobs.size());
+		List<Computer> reallyFreeComputers = new LinkedList<Computer>();
 		for (Computer freeComputer : freeComputers) {
+			boolean isReallyFree = true;
+			for (TemporaryJob temporaryJob : tempJobs) {
+				System.out.println("temporaryJob.getComputers(): " + temporaryJob.getComputers().size());
+				if (temporaryJob.getComputers().contains(freeComputer)) {
+					isReallyFree = false;
+					break;
+				}
+			}
+
+			if (isReallyFree)
+				reallyFreeComputers.add(freeComputer);
+		}
+
+		boolean isAssignmentValid = false;
+		int usedCPUs = 0;
+		
+		System.out.println("new assignment...");
+		for (Computer freeComputer : reallyFreeComputers) {
+			System.out.println("really free: " + freeComputer.getId());
 			tempJob.getComputers().add(freeComputer);
 			usedCPUs += freeComputer.getCPUs();
 
@@ -71,23 +95,21 @@ public class JobManagementBean implements JobManagement {
 			}
 		}
 
+		System.out.println("assignment valid: " + isAssignmentValid);
 		if (!isAssignmentValid)
 			throw new InvalidAssignmentException();
 
-		if (!jobsByGrid.containsKey(gridId))
-			jobsByGrid.put(gridId, new TemporaryJobs());
-		jobsByGrid.get(gridId).add(tempJob);
+		tempJobs.add(tempJob);
+		jobsByGrid.put(gridId, tempJobs);
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void clear(long gridId) {
 		if (jobsByGrid.containsKey(gridId))
 			jobsByGrid.remove(gridId);
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public int get(long gridId) {
 		if (!jobsByGrid.containsKey(gridId))
 			return 0;
@@ -95,7 +117,6 @@ public class JobManagementBean implements JobManagement {
 	}
 
 	@Override
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void submit() throws NotLoggedInException,
 			InvalidAssignmentException {
 		if (user == null)
@@ -103,8 +124,10 @@ public class JobManagementBean implements JobManagement {
 
 		for (Long gridId : jobsByGrid.keySet()) {
 			for (TemporaryJob tempJob : jobsByGrid.get(gridId)) {
-				// TODO: check if assignment still valid
-				
+				if (!isStillValid(tempJob))
+					throw new InvalidAssignmentException("Grid " + gridId
+							+ " has invalid job assignments.");
+
 				Job job = new Job();
 				job.setNeeds(new Environment());
 				job.getNeeds().setWorkflow(tempJob.getWorkflow());
@@ -118,7 +141,7 @@ public class JobManagementBean implements JobManagement {
 				}
 				job.setCreatedBy(user);
 				job.setIsPaid(false);
-	
+
 				em.persist(job);
 			}
 		}
@@ -126,8 +149,19 @@ public class JobManagementBean implements JobManagement {
 		discard();
 	}
 
+	private boolean isStillValid(TemporaryJob tempJob) {
+		for (Computer freeComputer : tempJob.getComputers()) {
+			for (Execution execution : freeComputer.getRunning()) {
+				if (execution.getStart() != null && execution.getEnd() == null)
+					return false;
+			}
+		}
+		return true;
+	}
+
 	@Remove
 	public void discard() {
+		user = null;
 	}
 
 }

@@ -20,7 +20,7 @@ public class Main {
 
 	/**
 	 * @param args
-	 * @throws NamingException 
+	 * @throws NamingException
 	 */
 	public static void main(String[] args) throws NamingException {
 
@@ -28,7 +28,6 @@ public class Main {
 		Testing testing = (Testing) InitialContext
 				.doLookup("java:global/dst2_1/TestingBean");
 		logger.info("Found and wired TestingBean.");
-
 		logger.info("Adding grid for tests...");
 		testing.addGrid();
 		logger.info("Added grid for tests.");
@@ -37,7 +36,6 @@ public class Main {
 		GeneralManagement generalManagement = (GeneralManagement) InitialContext
 				.doLookup("java:global/dst2_1/GeneralManagementBean");
 		logger.info("Found and wired GeneralManagementBean.");
-
 		logger.info("Adding some price steps...");
 		generalManagement.addPriceStep(100, BigDecimal.valueOf(30));
 		generalManagement.addPriceStep(1000, BigDecimal.valueOf(15));
@@ -48,7 +46,6 @@ public class Main {
 		JobManagement jobManagement = (JobManagement) InitialContext
 				.doLookup("java:global/dst2_1/JobManagementBean");
 		logger.info("Found and wired JobManagementBean.");
-
 		logger.info("Logging in with unknown user...");
 		try {
 			jobManagement.login("unknownUser", "Test1");
@@ -56,7 +53,6 @@ public class Main {
 		} catch (InvalidCredentialsException e) {
 			logger.info("Login failed as expected.");
 		}
-
 		logger.info("Logging in with invalid password...");
 		try {
 			jobManagement.login("mm", "invalidPassword");
@@ -64,24 +60,12 @@ public class Main {
 		} catch (InvalidCredentialsException e) {
 			logger.info("Login failed as expected.");
 		}
-
 		logger.info("Logging in with correct credentials...");
 		try {
 			jobManagement.login("mm", "Test1");
 		} catch (InvalidCredentialsException e) {
 			bailOut("InvalidCredentialsException occured unexpectedly.");
 		}
-
-		logger.info("Assigning two jobs to grid 1..");
-		try {
-			jobManagement.add(1, 4, "map-reduce", new ArrayList<String>());
-			jobManagement.add(1, 4, "map-reduce", new ArrayList<String>());
-		} catch (InvalidAssignmentException e) {
-			bailOut("InvalidAssignmentException occured unexpectedly.");
-		}
-		logger.info("Clearing jobs of grid 1..");
-		jobManagement.clear(1);
-		logger.info("Assigned " + jobManagement.get(1) + " jobs to grid 1");
 
 		logger.info("Creating valid job assignment with 3 jobs..");
 		try {
@@ -93,7 +77,7 @@ public class Main {
 		} catch (InvalidAssignmentException e) {
 			bailOut("InvalidAssignmentException occured unexpectedly.");
 		}
-		logger.info("Assigned " + jobManagement.get(1) + " jobs to grid 1");
+		logger.info("Assigned " + jobManagement.get(1) + " jobs to grid 1.");
 		logger.info("Submitting jobs...");
 		try {
 			jobManagement.submit();
@@ -102,7 +86,36 @@ public class Main {
 		} catch (InvalidAssignmentException e) {
 			bailOut("InvalidAssignmentException occured unexpectedly.");
 		}
+		
+		logger.info("Logging in with other credentials...");
+		try {
+			jobManagement.login("jd", "Test1");
+		} catch (InvalidCredentialsException e) {
+			bailOut("InvalidCredentialsException occured unexpectedly.");
+		}
 
+		logger.info("Creating invalid job assignment with 2 jobs...");
+		try {
+			jobManagement.add(2, 8, "map-reduce", new ArrayList<String>());
+			jobManagement.add(2, 8, "map-reduce", new ArrayList<String>());
+			bailOut("InvalidAssignmentException expected.");
+		} catch (InvalidAssignmentException e) {
+			logger.info("Assignment failed as expected.");
+		}
+		logger.info("Assigned " + jobManagement.get(2) + " jobs to grid 2.");
+		
+		logger.info("Clearing jobs of grid 2..");
+		jobManagement.clear(2);
+		logger.info("Assigned " + jobManagement.get(2) + " jobs to grid 2.");
+		logger.info("Submitting jobs...");
+		try {
+			jobManagement.submit();
+		} catch (NotLoggedInException e) {
+			bailOut("NotLoggedInException occured unexpectedly.");
+		} catch (InvalidAssignmentException e) {
+			bailOut("InvalidAssignmentException occured unexpectedly.");
+		}
+		
 	}
 
 	private static void bailOut(String message) {

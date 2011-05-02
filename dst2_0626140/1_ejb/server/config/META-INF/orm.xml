@@ -27,6 +27,7 @@
 				and not exists (select exec from Execution exec
 								where exec.runsOn = comp
 								and exec.start is not null and exec.end is null)
+				order by comp.CPUs asc
 			</query>
 		</named-query>
 	</entity>
