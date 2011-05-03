@@ -11,6 +11,7 @@ import javax.ejb.Remove;
 import javax.ejb.Stateful;
 import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
+import javax.interceptor.Interceptors;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
@@ -18,6 +19,7 @@ import javax.persistence.Query;
 import dst2.ejb.exceptions.InvalidAssignmentException;
 import dst2.ejb.exceptions.InvalidCredentialsException;
 import dst2.ejb.exceptions.NotLoggedInException;
+import dst2.ejb.interceptors.AuditInterceptor;
 import dst2.model.Computer;
 import dst2.model.Environment;
 import dst2.model.Execution;
@@ -26,6 +28,7 @@ import dst2.model.JobStatus;
 import dst2.model.User;
 
 @Stateful
+@Interceptors(AuditInterceptor.class)
 public class JobManagementBean implements JobManagement {
 
 	private static Logger logger = Logger.getLogger(JobManagementBean.class.getName());
@@ -105,7 +108,7 @@ public class JobManagementBean implements JobManagement {
 
 		logger.info("assignment valid: " + isAssignmentValid);
 		if (!isAssignmentValid)
-			throw new InvalidAssignmentException();
+			throw new InvalidAssignmentException("Not enough free computers.");
 
 		tempJobs.add(tempJob);
 		jobsByGrid.put(gridId, tempJobs);
@@ -128,7 +131,7 @@ public class JobManagementBean implements JobManagement {
 	public void submit() throws NotLoggedInException,
 			InvalidAssignmentException {
 		if (user == null)
-			throw new NotLoggedInException();
+			throw new NotLoggedInException("Must be logged in to submit temporary jobs.");
 
 		for (Long gridId : jobsByGrid.keySet()) {
 			for (TemporaryJob tempJob : jobsByGrid.get(gridId)) {
