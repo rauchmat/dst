@@ -2,6 +2,7 @@ package dst2.ejb;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.Future;
 import java.util.logging.Logger;
@@ -14,8 +15,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import dst2.ejb.dto.AuditDto;
+import dst2.ejb.dto.AuditParameterDto;
 import dst2.model.Computer;
 import dst2.model.Grid;
+import dst2.model.Invocation;
+import dst2.model.InvocationParameter;
 import dst2.model.Job;
 import dst2.model.Membership;
 import dst2.model.User;
@@ -93,11 +98,11 @@ public class GeneralManagementBean implements GeneralManagement {
 				BigDecimal costsPerExecution = executionTimeInMinutes
 						.multiply(grid.getCostsPerCPUMinute());
 
-				BigDecimal discount = getDiscount(user,
-						grid);
-				logger.info("discount for grid " + grid.getId()
-						+ ": " + discount);
-				sumOfDiscount = sumOfDiscount.add(costsPerExecution.multiply(discount));
+				BigDecimal discount = getDiscount(user, grid);
+				logger.info("discount for grid " + grid.getId() + ": "
+						+ discount);
+				sumOfDiscount = sumOfDiscount.add(costsPerExecution
+						.multiply(discount));
 				sumOfCostsForExecution = sumOfCostsForExecution
 						.add(costsPerExecution);
 			}
@@ -137,6 +142,28 @@ public class GeneralManagementBean implements GeneralManagement {
 			}
 		}
 		return BigDecimal.ZERO;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public List<AuditDto> getAudits() {
+		List<AuditDto> auditDtos = new LinkedList<AuditDto>();
+		Query query = em.createNamedQuery("allInvocations");
+		List<Invocation> invocations = query.getResultList();
+
+		for (Invocation invocation : invocations) {
+			AuditDto auditDto = new AuditDto(invocation.getInvocationTime(),
+					invocation.getMethodName(), invocation.getResult());
+			for (InvocationParameter parameter : invocation.getParameters()) {
+				AuditParameterDto auditParameterDto = new AuditParameterDto(
+						parameter.getIndex(), parameter.getClassName(),
+						parameter.getValue());
+				auditDto.parameters.add(auditParameterDto);
+			}
+			auditDtos.add(auditDto);
+		}
+
+		return auditDtos;
 	}
 
 }

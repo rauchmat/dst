@@ -3,6 +3,7 @@ package dst2.ejb;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
@@ -12,6 +13,7 @@ import javax.naming.NamingException;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 
+import dst2.ejb.dto.AuditDto;
 import dst2.ejb.exceptions.InvalidAssignmentException;
 import dst2.ejb.exceptions.InvalidCredentialsException;
 import dst2.ejb.exceptions.NotLoggedInException;
@@ -140,6 +142,12 @@ public class Main {
 		logger.info("Waiting for bill to be printed..");
 		Thread.sleep(1000);
 		logger.info(billForJohn.get());
+		
+		logger.info("Getting all audits..");
+		List<AuditDto> audits = generalManagement.getAudits();
+		for (AuditDto auditDto : audits) {
+			logger.info(auditDto.toString());
+		}
 	}
 
 	private static void bailOut(String message) {

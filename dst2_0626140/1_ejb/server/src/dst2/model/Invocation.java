@@ -6,9 +6,11 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -25,7 +27,8 @@ public class Invocation {
 	private Date invocationTime;
 	@Column(name = "methodName", nullable = false)
 	private String methodName;
-	@OneToMany(mappedBy = "invocation")
+	@OneToMany(mappedBy = "invocation", fetch = FetchType.EAGER)
+	@OrderBy("index")
 	private Set<InvocationParameter> parameters = new HashSet<InvocationParameter>();
 	@Column(name = "result", nullable = false)
 	private String result;

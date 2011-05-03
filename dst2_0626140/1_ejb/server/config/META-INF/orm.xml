@@ -3,6 +3,11 @@
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
 	version="2.0">
+	<entity class="dst2.model.Invocation">
+		<named-query name="allInvocations">
+			<query>select invocation from Invocation invocation</query>
+		</named-query>
+	</entity>
 	<entity class="dst2.model.User">
 		<named-query name="usersByCredentials">
 			<query>

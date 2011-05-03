@@ -47,6 +47,7 @@
 				<include name="dst2/ejb/GeneralManagement.class" />
 				<include name="dst2/ejb/JobManagement.class" />
 				<include name="dst2/ejb/exceptions/*.class" />
+				<include name="dst2/ejb/dto/*.class" />
 			</fileset>
 		</jar>
 	</target>

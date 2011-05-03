@@ -82,6 +82,10 @@ public class InvocationParameter {
 	public Invocation getInvocation() {
 		return invocation;
 	}
+	
+	public int getIndex() {
+		return this.id.index;
+	}
 
 	public String getClassName() {
 		return className;
