@@ -84,5 +84,11 @@
 		<java jar="${admin.cli.jar}" fork="true" spawn="false">
 			<arg line="delete-jms-resource topic.dst.SchedulerTopic" />
 		</java>
+		<java jar="${admin.cli.jar}" fork="true" spawn="false">
+			<arg line="delete-jms-resource queue.dst.ClusterQueue" />
+		</java>
+		<java jar="${admin.cli.jar}" fork="true" spawn="false">
+			<arg line="delete-jms-resource topic.dst.ClusterTopic" />
+		</java>
 	</target>
 </project>

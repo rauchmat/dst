@@ -33,14 +33,14 @@
 
 	<!-- set your main class -->
 	<target name="run-c1" depends="compile">
-		<java classname="your.main.class" fork="true" classpathref="classpath">
+		<java classname="dst2.client.Cluster" fork="true" classpathref="classpath">
 			<arg value="c1" />
 		</java>
 	</target>
 
 	<!-- set your main class -->
 	<target name="run-c2" depends="compile">
-		<java classname="your.main.class" fork="true" classpathref="classpath">
+		<java classname="dst2.client.Cluster" fork="true" classpathref="classpath">
 			<arg value="c2" />
 		</java>
 	</target>

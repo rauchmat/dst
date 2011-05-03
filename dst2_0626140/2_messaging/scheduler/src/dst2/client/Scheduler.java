@@ -28,6 +28,7 @@ public class Scheduler implements MessageListener {
 	private Topic schedulerTopic;
 
 	private BufferedReader in;
+	private Connection connection;
 
 	public static void main(String[] args) throws IOException, JMSException,
 			NamingException {
@@ -42,11 +43,11 @@ public class Scheduler implements MessageListener {
 		schedulerTopic = (Topic) InitialContext
 				.doLookup("topic.dst.SchedulerTopic");
 
-		Connection connection = connectionFactory.createConnection();
+		connection = connectionFactory.createConnection();
 		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		in = new BufferedReader(new InputStreamReader(System.in));
 
-		final MessageConsumer consumer = session.createConsumer(schedulerTopic);
+		MessageConsumer consumer = session.createConsumer(schedulerTopic);
 		consumer.setMessageListener(this);
 		connection.start();
 	}
@@ -56,44 +57,53 @@ public class Scheduler implements MessageListener {
 
 		String line = null;
 		while ((line = in.readLine()) != null) {
-			if (!handleCommand(line))
-				System.out.println("Invalid command.");
-			else
-				System.out.println("Command was executed.");
+			handleCommand(line);
 		}
 	}
 
-	private boolean handleCommand(String line) {
+	private void handleCommand(String line) {
 		String[] token = line.split(" ");
-		if (token.length == 0)
-			return false;
+		if (token.length == 0) {
+			System.out.println("Enter command.");
+			return;
+		}
 
-		if (token[0].equals("stop"))
-			System.exit(0);
-
-		if (token[0].equals("assign")) {
+		if (token[0].equals("stop")) {
+			stop();
+		} else if (token[0].equals("assign")) {
 			Long jobId = null;
 			try {
 				jobId = Long.parseLong(token[1]);
 			} catch (NumberFormatException e) {
-				return false;
+				System.out.println("jobId must be a number");
 			}
 			performAssign(jobId);
-			return true;
-		}
-
-		if (token[0].equals("info")) {
+		} else if (token[0].equals("info")) {
 			Long taskId = null;
 			try {
 				taskId = Long.parseLong(token[1]);
 			} catch (NumberFormatException e) {
-				return false;
+				System.out.println("jobId must be a number");
 			}
 			performInfo(taskId);
-			return true;
 		}
+		else {
+			System.out.println("Invalid command.");
+			return;
+		}
+			
 
-		return false;
+		System.out.println("Command executed.");;
+	}
+
+	private void stop() {
+		try {
+			connection.close();
+			session.close();
+		} catch (JMSException e) {
+			e.printStackTrace();
+		}
+		System.exit(0);
 	}
 
 	private void performInfo(Long taskId) {

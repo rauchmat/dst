@@ -11,9 +11,18 @@
 		jndi-name="queue.dst.InfoQueue" res-adapter="jmsra" res-type="javax.jms.Queue">
 		<property name="Name" value="queue.dst.InfoQueue" />
 	</admin-object-resource>
-		<admin-object-resource enabled="true"
+	<admin-object-resource enabled="true"
 		jndi-name="topic.dst.SchedulerTopic" res-adapter="jmsra" res-type="javax.jms.Topic">
 		<property name="Name" value="topic.dst.SchedulerTopic" />
+	</admin-object-resource>
+
+	<admin-object-resource enabled="true"
+		jndi-name="queue.dst.ClusterQueue" res-adapter="jmsra" res-type="javax.jms.Queue">
+		<property name="Name" value="queue.dst.ClusterQueue" />
+	</admin-object-resource>
+	<admin-object-resource enabled="true"
+		jndi-name="topic.dst.ClusterTopic" res-adapter="jmsra" res-type="javax.jms.Topic">
+		<property name="Name" value="topic.dst.ClusterTopic" />
 	</admin-object-resource>
 
 	<!-- FACTORY & POOL -->
