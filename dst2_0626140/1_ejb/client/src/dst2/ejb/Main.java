@@ -21,8 +21,9 @@ public class Main {
 	/**
 	 * @param args
 	 * @throws NamingException
+	 * @throws InterruptedException 
 	 */
-	public static void main(String[] args) throws NamingException {
+	public static void main(String[] args) throws NamingException, InterruptedException {
 
 		logger.info("Looking up TestingBean...");
 		Testing testing = (Testing) InitialContext
@@ -37,9 +38,10 @@ public class Main {
 				.doLookup("java:global/dst2_1/GeneralManagementBean");
 		logger.info("Found and wired GeneralManagementBean.");
 		logger.info("Adding some price steps...");
-		generalManagement.addPriceStep(100, BigDecimal.valueOf(30));
-		generalManagement.addPriceStep(1000, BigDecimal.valueOf(15));
-		generalManagement.addPriceStep(5000, BigDecimal.valueOf(5));
+		generalManagement.addPriceStep(0, BigDecimal.valueOf(5));
+		generalManagement.addPriceStep(1, BigDecimal.valueOf(3));
+		generalManagement.addPriceStep(2, BigDecimal.valueOf(2));
+		generalManagement.addPriceStep(3, BigDecimal.valueOf(1));
 		logger.info("Price steps added.");
 
 		logger.info("Looking up JobManagementBean...");
@@ -86,7 +88,7 @@ public class Main {
 		} catch (InvalidAssignmentException e) {
 			bailOut("InvalidAssignmentException occured unexpectedly.");
 		}
-		
+
 		logger.info("Logging in with other credentials...");
 		try {
 			jobManagement.login("jd", "Test1");
@@ -103,9 +105,17 @@ public class Main {
 			logger.info("Assignment failed as expected.");
 		}
 		logger.info("Assigned " + jobManagement.get(2) + " jobs to grid 2.");
-		
+
 		logger.info("Clearing jobs of grid 2..");
 		jobManagement.clear(2);
+		logger.info("Assigned " + jobManagement.get(2) + " jobs to grid 2.");
+		
+		logger.info("Creating valid job assignment with 1 job...");
+		try {
+			jobManagement.add(2, 4, "map-reduce", new ArrayList<String>());
+		} catch (InvalidAssignmentException e) {
+			bailOut("InvalidAssignmentException occured unexpectedly.");
+		}
 		logger.info("Assigned " + jobManagement.get(2) + " jobs to grid 2.");
 		logger.info("Submitting jobs...");
 		try {
@@ -116,6 +126,13 @@ public class Main {
 			bailOut("InvalidAssignmentException occured unexpectedly.");
 		}
 		
+		logger.info("Waiting 6 seconds for jobs to finish..");
+		Thread.sleep(6000);
+
+		String billForMax = generalManagement.getTotalBill("mm");
+		logger.info(billForMax);
+		String billForJohn = generalManagement.getTotalBill("jd");
+		logger.info(billForJohn);
 	}
 
 	private static void bailOut(String message) {

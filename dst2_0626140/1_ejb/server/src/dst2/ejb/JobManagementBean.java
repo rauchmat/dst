@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
 import javax.ejb.Remove;
 import javax.ejb.Stateful;
@@ -13,9 +14,6 @@ import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
 
 import dst2.ejb.exceptions.InvalidAssignmentException;
 import dst2.ejb.exceptions.InvalidCredentialsException;
@@ -30,8 +28,8 @@ import dst2.model.User;
 @Stateful
 public class JobManagementBean implements JobManagement {
 
-	private static Logger logger = LogManager.getLogger(JobManagementBean.class);
-	
+	private static Logger logger = Logger.getLogger(JobManagementBean.class.getName());
+
 	@PersistenceContext
 	private EntityManager em;
 	private User user;
@@ -70,13 +68,14 @@ public class JobManagementBean implements JobManagement {
 		TemporaryJob tempJob = new TemporaryJob();
 		tempJob.setWorkflow(workflow);
 		tempJob.setParams(parameters);
-
+		logger.info("Assigning " + workflow + " to grid " + gridId);
 		logger.info("tempJobs: " + tempJobs.size());
 		List<Computer> reallyFreeComputers = new LinkedList<Computer>();
 		for (Computer freeComputer : freeComputers) {
 			boolean isReallyFree = true;
 			for (TemporaryJob temporaryJob : tempJobs) {
-				logger.info("temporaryJob.getComputers(): " + temporaryJob.getComputers().size());
+				logger.info("temporaryJob.getComputers(): "
+						+ temporaryJob.getComputers().size());
 				if (temporaryJob.getComputers().contains(freeComputer)) {
 					isReallyFree = false;
 					break;
@@ -89,10 +88,12 @@ public class JobManagementBean implements JobManagement {
 
 		boolean isAssignmentValid = false;
 		int usedCPUs = 0;
-		
+
 		logger.info("new assignment...");
+		logger.info("free: " + freeComputers.size());
+		logger.info("really free: " + reallyFreeComputers.size());
 		for (Computer freeComputer : reallyFreeComputers) {
-			logger.info("really free: " + freeComputer.getId());
+			
 			tempJob.getComputers().add(freeComputer);
 			usedCPUs += freeComputer.getCPUs();
 
@@ -112,8 +113,7 @@ public class JobManagementBean implements JobManagement {
 
 	@Override
 	public void clear(long gridId) {
-		if (jobsByGrid.containsKey(gridId))
-			jobsByGrid.remove(gridId);
+		jobsByGrid.remove(gridId);
 	}
 
 	@Override

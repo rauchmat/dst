@@ -39,6 +39,19 @@
 			</query>
 		</named-query>
 	</entity>
+	<entity class="dst2.model.Job">
+		<named-query name="finishedJobsByUser">
+			<query>
+				select job from Job job
+				inner join job.executesIn exec
+				inner join job.createdBy user
+				where job.isPaid = false
+				and exec.status = dst2.model.JobStatus.FINISHED
+				and user.username = :username
+				order by exec.start asc
+			</query>
+		</named-query>
+	</entity>
 	<entity class="dst2.model.Computer" name="Computer">
 		<table name="computer">
 			<unique-constraint>

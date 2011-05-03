@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.AccessTimeout;
@@ -27,6 +28,9 @@ import dst2.model.PriceStep;
 @AccessTimeout(10000)
 public class PriceManagementBean implements PriceManagement {
 
+	private static Logger logger = Logger.getLogger(PriceManagementBean.class
+			.getName());
+
 	@PersistenceContext
 	private EntityManager em;
 	private SortedSet<PriceStep> steps;
@@ -34,7 +38,8 @@ public class PriceManagementBean implements PriceManagement {
 	@SuppressWarnings("unchecked")
 	@PostConstruct
 	public void initialize() {
-		List<PriceStep> steps = em.createNamedQuery("allPriceSteps").getResultList();
+		List<PriceStep> steps = em.createNamedQuery("allPriceSteps")
+				.getResultList();
 		this.steps = new TreeSet<PriceStep>(steps);
 	}
 
@@ -53,20 +58,32 @@ public class PriceManagementBean implements PriceManagement {
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	@Override
 	public BigDecimal getPrice(int numberOfHistoricalJobs) {
+		logger.info("getting schedule costs for # of jobs: "
+				+ numberOfHistoricalJobs);
 		Iterator<PriceStep> stepsIterator = this.steps.iterator();
 
+		PriceStep lastStep = null;
 		PriceStep currentStep = null;
 		while (stepsIterator.hasNext()) {
+			lastStep = currentStep;
 			currentStep = stepsIterator.next();
+			logger.info("currentStep # of jobs: "
+					+ currentStep.getNumberOfHistoricalJobs());
 
-			if (numberOfHistoricalJobs > currentStep
-					.getNumberOfHistoricalJobs())
+			if (currentStep.getNumberOfHistoricalJobs() > numberOfHistoricalJobs) {
 				break;
-		}
+			}
 
-		if (currentStep == null)
+		}
+		
+		BigDecimal price;
+		if (lastStep == null)
 			return BigDecimal.ZERO;
-		return currentStep.getPrice();
+		else
+			price = lastStep.getPrice();
+		logger.info("price for # of jobs: "
+				+ price);
+		return price;
 	}
 
 }

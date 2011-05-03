@@ -34,9 +34,9 @@ public class Execution {
 	@Enumerated(EnumType.STRING)
 	@Column(name = "status", nullable = false)
 	private JobStatus status;
-	@ManyToMany(mappedBy = "running")
+	@ManyToMany(mappedBy = "running", fetch = FetchType.EAGER)
 	private Set<Computer> runsOn = new HashSet<Computer>();
-	@OneToOne(optional = false, mappedBy = "executesIn", fetch = FetchType.EAGER)
+	@OneToOne(optional = false, mappedBy = "executesIn")
 	private Job executes;
 
 	public Long getId() {

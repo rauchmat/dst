@@ -24,7 +24,7 @@ public class TimerBean {
 	private EntityManager em;
 
 	@SuppressWarnings("unchecked")
-	@Schedule(minute = "*/1", hour = "*", info = "every minute")
+	@Schedule(second = "*/5",minute = "*", hour = "*", info = "every 5 seconds")
 	public void automaticTimeout() {
 		logger.info("Timer invoked");
 

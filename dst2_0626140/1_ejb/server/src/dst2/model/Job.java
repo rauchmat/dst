@@ -41,14 +41,6 @@ public class Job {
 		this.isPaid = isPaid;
 	}
 
-	public Integer getNumCPUs() {
-		return null;
-	}
-
-	public Integer getExecutionTime() {
-		return null;
-	}
-
 	public void setExecutesIn(Execution executesIn) {
 		this.executesIn = executesIn;
 	}
