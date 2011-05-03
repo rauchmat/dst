@@ -1,6 +1,7 @@
 package dst2.ejb;
 
 import java.math.BigDecimal;
+import java.util.concurrent.Future;
 
 import javax.ejb.Remote;
 
@@ -8,5 +9,5 @@ import javax.ejb.Remote;
 public interface GeneralManagement {
 	void addPriceStep(int numberOfHistoricalJobs, BigDecimal price);
 
-	String getTotalBill(String username);
+	Future<String> getTotalBill(String username);
 }

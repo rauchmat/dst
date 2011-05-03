@@ -3,6 +3,8 @@ package dst2.ejb;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
@@ -22,8 +24,9 @@ public class Main {
 	 * @param args
 	 * @throws NamingException
 	 * @throws InterruptedException 
+	 * @throws ExecutionException 
 	 */
-	public static void main(String[] args) throws NamingException, InterruptedException {
+	public static void main(String[] args) throws NamingException, InterruptedException, ExecutionException {
 
 		logger.info("Looking up TestingBean...");
 		Testing testing = (Testing) InitialContext
@@ -129,10 +132,14 @@ public class Main {
 		logger.info("Waiting 6 seconds for jobs to finish..");
 		Thread.sleep(6000);
 
-		String billForMax = generalManagement.getTotalBill("mm");
-		logger.info(billForMax);
-		String billForJohn = generalManagement.getTotalBill("jd");
-		logger.info(billForJohn);
+		Future<String> billForMax = generalManagement.getTotalBill("mm");
+		logger.info("Waiting for bill to be printed..");
+		Thread.sleep(1000);
+		logger.info(billForMax.get());
+		Future<String> billForJohn = generalManagement.getTotalBill("jd");
+		logger.info("Waiting for bill to be printed..");
+		Thread.sleep(1000);
+		logger.info(billForJohn.get());
 	}
 
 	private static void bailOut(String message) {

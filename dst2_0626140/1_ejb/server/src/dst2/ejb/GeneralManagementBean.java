@@ -3,8 +3,11 @@ package dst2.ejb;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.concurrent.Future;
 import java.util.logging.Logger;
 
+import javax.ejb.AsyncResult;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -35,8 +38,9 @@ public class GeneralManagementBean implements GeneralManagement {
 	}
 
 	@SuppressWarnings("unchecked")
+	@Asynchronous
 	@Override
-	public String getTotalBill(String username) {
+	public Future<String> getTotalBill(String username) {
 		logger.info("getting bill for " + username);
 		Query query = em.createNamedQuery("finishedJobsByUser");
 		query.setParameter("username", username);
@@ -112,7 +116,7 @@ public class GeneralManagementBean implements GeneralManagement {
 		bill.append("\n");
 		bill.append("Total:\t\t\t\t\t\t\t\t\t");
 		bill.append(totalCosts);
-		return bill.toString();
+		return new AsyncResult<String>(bill.toString());
 	}
 
 	private BigDecimal getDiscount(User user, Grid grid) {
