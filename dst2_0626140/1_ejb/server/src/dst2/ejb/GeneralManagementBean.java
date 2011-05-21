@@ -41,7 +41,7 @@ public class GeneralManagementBean implements GeneralManagement {
 	public void addPriceStep(int numberOfHistoricalJobs, BigDecimal price) {
 		priceManagement.addStep(numberOfHistoricalJobs, price);
 	}
-
+	
 	@SuppressWarnings("unchecked")
 	@Asynchronous
 	@Override

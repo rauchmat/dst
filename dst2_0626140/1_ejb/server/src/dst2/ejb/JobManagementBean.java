@@ -31,7 +31,8 @@ import dst2.model.User;
 @Interceptors(AuditInterceptor.class)
 public class JobManagementBean implements JobManagement {
 
-	private static Logger logger = Logger.getLogger(JobManagementBean.class.getName());
+	private static Logger logger = Logger.getLogger(JobManagementBean.class
+			.getName());
 
 	@PersistenceContext
 	private EntityManager em;
@@ -96,7 +97,7 @@ public class JobManagementBean implements JobManagement {
 		logger.info("free: " + freeComputers.size());
 		logger.info("really free: " + reallyFreeComputers.size());
 		for (Computer freeComputer : reallyFreeComputers) {
-			
+
 			tempJob.getComputers().add(freeComputer);
 			usedCPUs += freeComputer.getCPUs();
 
@@ -128,10 +129,12 @@ public class JobManagementBean implements JobManagement {
 
 	@Override
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	@Remove(retainIfException = true)
 	public void submit() throws NotLoggedInException,
 			InvalidAssignmentException {
 		if (user == null)
-			throw new NotLoggedInException("Must be logged in to submit temporary jobs.");
+			throw new NotLoggedInException(
+					"Must be logged in to submit temporary jobs.");
 
 		for (Long gridId : jobsByGrid.keySet()) {
 			for (TemporaryJob tempJob : jobsByGrid.get(gridId)) {
@@ -156,8 +159,6 @@ public class JobManagementBean implements JobManagement {
 				em.persist(job);
 			}
 		}
-
-		discard();
 	}
 
 	private boolean isStillValid(TemporaryJob tempJob) {
@@ -168,11 +169,6 @@ public class JobManagementBean implements JobManagement {
 			}
 		}
 		return true;
-	}
-
-	@Remove
-	public void discard() {
-		user = null;
 	}
 
 }

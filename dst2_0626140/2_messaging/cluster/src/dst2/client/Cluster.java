@@ -28,7 +28,6 @@ public class Cluster {
 	private String name;
 	private Connection connection;
 	private Thread receiverThread;
-	private MessageConsumer consumer;
 
 	public static void main(String[] args) throws IOException, JMSException,
 			NamingException {
@@ -44,12 +43,10 @@ public class Cluster {
 				.doLookup("topic.dst.ClusterTopic");
 
 		connection = connectionFactory.createConnection();
-		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 		this.name = name;
 	}
 
 	public void run() throws IOException, JMSException {
-		consumer = session.createConsumer(clusterTopic);
 		connection.start();
 		startReceiverThread();
 
@@ -61,8 +58,10 @@ public class Cluster {
 		}
 	}
 
-	private void startReceiverThread() {
-		currentTask  = null;
+	private void startReceiverThread() throws JMSException {
+		currentTask = null;
+		session = connection.createSession(true, Session.SESSION_TRANSACTED);
+		final MessageConsumer consumer = session.createConsumer(clusterTopic);
 		receiverThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -107,7 +106,6 @@ public class Cluster {
 		try {
 			receiverThread.interrupt();
 			connection.close();
-			session.close();
 		} catch (JMSException e) {
 			e.printStackTrace();
 		}
@@ -131,6 +129,7 @@ public class Cluster {
 			message.setStringProperty("command", "accept");
 			messageProducer.send(message);
 			messageProducer.close();
+			session.commit();
 			startReceiverThread();
 		} catch (JMSException e) {
 			e.printStackTrace();

@@ -3,10 +3,12 @@ package dst2.ejb;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+import javax.annotation.Resource;
 import javax.ejb.ActivationConfigProperty;
 import javax.ejb.MessageDriven;
 import javax.jms.JMSException;
 import javax.jms.Message;
+import javax.jms.Topic;
 
 import dst2.model.Task;
 import dst2.model.TaskComplexity;
@@ -21,6 +23,9 @@ public class ClusterListenerMDB extends BaseMDB {
 
 	private static Logger logger = Logger.getLogger(AssignListenerMDB.class
 			.getName());
+	
+	@Resource(mappedName = "topic.dst.SchedulerTopic")
+	private Topic schedulerTopic;
 
 	@Override
 	public void onMessage(Message message) {
@@ -37,7 +42,7 @@ public class ClusterListenerMDB extends BaseMDB {
 				// TODO send to computers
 			} else {
 				task.setStatus(TaskStatus.PROCESSING_NOT_POSSIBLE);
-				// TODO inform scheduler
+				sendTextMessage(schedulerTopic, "Task denied: " + task);
 			}
 
 		} catch (JMSException e) {
