@@ -85,8 +85,7 @@ public class PluginExecutorImpl extends TimerTask implements IPluginExecutor {
 	private void scanJar(File file) throws IOException {
 		if (file.lastModified() > lastScan) {
 			JarFile jarFile = new JarFile(file);
-			URL[] urls = { new URL("jar:file:" + file.getAbsolutePath() + "!/") };
-			URLClassLoader cl = URLClassLoader.newInstance(urls);
+			ClassLoader cl = new InjectionAwareClassLoader(jarFile, getClass().getClassLoader());
 
 			for (Enumeration<JarEntry> e = jarFile.entries(); e
 					.hasMoreElements();) {

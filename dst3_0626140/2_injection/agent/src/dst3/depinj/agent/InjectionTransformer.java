@@ -1,17 +1,14 @@
 package dst3.depinj.agent;
 
-import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.logging.Logger;
 
 import javassist.ByteArrayClassPath;
-import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
-import javassist.bytecode.Descriptor;
 import dst3.depinj.annotations.Component;
 
 public class InjectionTransformer implements ClassFileTransformer {
@@ -63,6 +60,6 @@ public class InjectionTransformer implements ClassFileTransformer {
 	}
 
 	private boolean shouldTransform(String className) {
-		return className.startsWith("dst3");
+		return className.startsWith("dst3"); //for performance at demo!
 	}
 }
