@@ -1,11 +1,13 @@
 package dst3.depinj.agent;
 
+import java.io.File;
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.IllegalClassFormatException;
 import java.security.ProtectionDomain;
 import java.util.logging.Logger;
 
 import javassist.ByteArrayClassPath;
+import javassist.ClassPath;
 import javassist.ClassPool;
 import javassist.CtClass;
 import javassist.CtConstructor;
@@ -14,8 +16,8 @@ import dst3.depinj.annotations.Component;
 
 public class InjectionTransformer implements ClassFileTransformer {
 
-	private static final Logger logger = Logger.getLogger(InjectionTransformer.class
-			.getName());
+	private static final Logger logger = Logger
+			.getLogger(InjectionTransformer.class.getName());
 
 	private ClassPool classPool;
 
@@ -31,20 +33,23 @@ public class InjectionTransformer implements ClassFileTransformer {
 
 		if (shouldTransform(className)) {
 			logger.info("Analyzing " + className);
-			
+
 			try {
+
 				classPool.insertClassPath(new ByteArrayClassPath(className,
 						classfileBuffer));
-				CtClass cc = classPool.get(className);
-				logger.info(Boolean.toString(cc.getClass().isAnnotationPresent(Component.class)));
-				if (cc.getClass().getAnnotation(Component.class) != null) {
+				CtClass cc = classPool.get(className.replace("/", "."));
+
+				if (cc.hasAnnotation(Component.class)) {
 					logger.info("Transforming " + className);
-					
-					CtConstructor constructor = cc.getConstructor(Descriptor
-							.ofConstructor(new CtClass[0]));
-					String src = "dst3.depinj.InjectionControllerImpl.getInstance().initialize(this);";
-					constructor.insertBefore(src);
+
+					for (CtConstructor constructor : cc.getConstructors()) {
+						String src = "{ dst3.depinj.InjectionControllerImpl.getInstance().initialize($0); }";
+						constructor.insertBeforeBody(src);
+					}
+
 				}
+				
 				return cc.toBytecode();
 
 			} catch (Exception e) {
@@ -53,7 +58,7 @@ public class InjectionTransformer implements ClassFileTransformer {
 			}
 		}
 
-		return null;
+		return classfileBuffer;
 
 	}
 

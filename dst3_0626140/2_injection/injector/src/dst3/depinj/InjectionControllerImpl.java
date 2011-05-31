@@ -79,7 +79,7 @@ public class InjectionControllerImpl implements IInjectionController {
 					}
 				}
 			}
-			
+
 			declaringClass = declaringClass.getSuperclass();
 		}
 
@@ -132,7 +132,7 @@ public class InjectionControllerImpl implements IInjectionController {
 			IllegalAccessException {
 		@SuppressWarnings("unchecked")
 		T instance = (T) Class.forName(clazz.getName()).newInstance();
-		initialize(instance);
+		// initialize(instance); uncomment to use solution without agent
 		return instance;
 	}
 
