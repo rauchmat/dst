@@ -1,0 +1,104 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="template.xhtml">
+	<ui:define name="pageTitle">
+		<h:outputText value="#{m['register.title']}" />
+	</ui:define>
+	<ui:define name="content">
+		<h1>
+			<h:outputText value="#{m['register.header']}"></h:outputText>
+		</h1>
+
+		<h:form id="registerForm">
+			<fieldset>
+				<label for="username"><h:outputText
+						value="#{m['register.username']}"></h:outputText> </label>
+				<h:inputText id="username"
+					value="#{registerController.user.username}" size="30"
+					required="true">
+					<f:validateLength minimum="4" maximum="30" />
+				</h:inputText>
+				<h:message for="username" errorClass="error" />
+				<br /> <label for="password"><h:outputText
+						value="#{m['register.password']}"></h:outputText> </label>
+				<h:inputSecret id="password"
+					value="#{registerController.user.password}" size="30"
+					required="true">
+					<f:validateLength minimum="6" maximum="30" />
+				</h:inputSecret>
+				<h:message for="password" errorClass="error" />
+				<br /> <label for="confirmPassword"><h:outputText
+						value="#{m['register.confirmPassword']}"></h:outputText> </label>
+				<h:inputSecret id="confirmPassword"
+					value="#{registerController.passwordConfirmation}" size="30"
+					required="true">
+				</h:inputSecret>
+				<h:message for="confirmPassword" errorClass="error" />
+				<br /> <label for="firstname"><h:outputText
+						value="#{m['register.firstname']}"></h:outputText> </label>
+				<h:inputText id="firstname"
+					value="#{registerController.user.firstname}" size="30"
+					required="true">
+				</h:inputText>
+				<h:message for="firstname" errorClass="error" />
+				<br /> <label for="lastname"><h:outputText
+						value="#{m['register.lastname']}"></h:outputText> </label>
+				<h:inputText id="lastname"
+					value="#{registerController.user.lastname}" size="30"
+					required="true">
+				</h:inputText>
+				<h:message for="lastname" errorClass="error" />
+				<br /> <label for="street"><h:outputText
+						value="#{m['register.street']}"></h:outputText> </label>
+				<h:inputText id="street"
+					value="#{registerController.user.address.street}" size="30"
+					required="true">
+				</h:inputText>
+				<h:message for="street" errorClass="error" />
+				<br /> <label for="city"><h:outputText
+						value="#{m['register.city']}"></h:outputText> </label>
+				<h:inputText id="city"
+					value="#{registerController.user.address.city}" size="30"
+					required="true">
+				</h:inputText>
+				<h:message for="city" errorClass="error" />
+				<br /> <label for="zipCode"><h:outputText
+						value="#{m['register.zipCode']}"></h:outputText> </label>
+				<h:inputText id="zipCode"
+					value="#{registerController.user.address.zipCode}" size="30"
+					required="true">
+					<f:validateLongRange for="zipCode" minimum="1" maximum="99999" />
+				</h:inputText>
+				<h:message for="zipCode" errorClass="error" />
+				<br /> <label for="accountNo"><h:outputText
+						value="#{m['register.accountNo']}"></h:outputText> </label>
+				<h:inputText id="accountNo"
+					value="#{registerController.user.accountNo}" size="30"
+					required="true">
+					<f:validateLongRange for="accountNo" minimum="1"
+						maximum="99999999999" />
+				</h:inputText>
+				<h:message for="accountNo" errorClass="error" />
+				<br /> <label for="bankCode"><h:outputText
+						value="#{m['register.bankCode']}"></h:outputText> </label>
+				<h:inputText id="bankCode"
+					value="#{registerController.user.bankCode}" size="30"
+					required="true">
+					<f:validateLongRange for="bankCode" minimum="1" maximum="99999" />
+				</h:inputText>
+				<h:message for="bankCode" errorClass="error" />
+				<br />
+			</fieldset>
+
+			<h:commandButton id="register" value="#{m['register.register']}"
+				action="#{registerController.register}" />
+			<h:commandButton id="reset" value="#{m['register.reset']}"
+				type="Reset" />
+
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

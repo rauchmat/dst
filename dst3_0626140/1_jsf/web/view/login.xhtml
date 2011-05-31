@@ -1,0 +1,37 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="template.xhtml">
+	<ui:define name="pageTitle">
+		<h:outputText value="#{m['login.title']}" />
+	</ui:define>
+	<ui:define name="content">
+		<h1>
+			<h:outputText value="#{m['login.header']}"></h:outputText>
+		</h1>
+
+		<h:form>
+			<fieldset>
+				<h:messages errorClass="error"></h:messages>
+				<label for="username"><h:outputText
+						value="#{m['login.username']}"></h:outputText> </label>
+				<h:inputText id="username" value="#{sessionController.username}"
+					size="30" required="true">
+				</h:inputText>
+				<br /> <label for="password"><h:outputText
+						value="#{m['login.password']}"></h:outputText> </label>
+				<h:inputSecret id="password" value="#{sessionController.password}"
+					size="30" required="true">
+				</h:inputSecret>
+				<br />
+			</fieldset>
+
+			<h:commandButton id="login" value="#{m['login.login']}"
+				action="#{sessionController.login}" />
+
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

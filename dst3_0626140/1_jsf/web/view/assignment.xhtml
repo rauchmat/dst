@@ -1,0 +1,41 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="template.xhtml">
+	<ui:define name="pageTitle">
+		<h:outputText value="#{m['assignment.title']}" />
+	</ui:define>
+	<ui:define name="content">
+		<h1>
+			<h:outputText value="#{m['assignment.header']}"></h:outputText>
+		</h1>
+
+		<h:form>
+			<h:dataTable id="jobsTable" value="${jobController.allGrids}"
+				var="grid" border="3" cellpadding="5" cellspacing="3"
+				summary="#{m['assignment.summary']}">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{m['assignment.gridId']}" />
+					</f:facet>
+					<h:outputText value="#{grid.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{m['assignment.jobCount']}" />
+					</f:facet>
+					<h:outputText value="#{jobController.getJobCount(grid.id)}" />
+				</h:column>
+				<h:column>
+					<h:commandButton id="clearJobs" value="#{m['assignment.clearJobs']}"
+						action="#{jobController.clearJobs(grid.id)}" />
+				</h:column>
+			</h:dataTable>
+			<h:commandButton id="submitJobs" value="#{m['assignment.submitJobs']}"
+				action="#{jobController.submitJobs}" />
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

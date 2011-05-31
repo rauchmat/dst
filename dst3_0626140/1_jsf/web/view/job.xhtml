@@ -1,0 +1,69 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="template.xhtml">
+	<ui:define name="pageTitle">
+		<h:outputText value="#{m['job.title']}" />
+	</ui:define>
+	<ui:define name="content">
+		<h1>
+			<h:outputText value="#{m['job.header']}"></h:outputText>
+		</h1>
+
+		<h:form id="jobForm">
+			<fieldset>
+				<label for="grid"><h:outputText value="#{m['job.grid']}"></h:outputText>
+				</label>
+				<h:outputText value="#{jobController.gridId}"></h:outputText>
+				<h:inputHidden id="gridId" value="#{jobController.gridId}"></h:inputHidden>
+				<br /> <label for="numberOfCPUs"><h:outputText
+						value="#{m['job.numberOfCPUs']}"></h:outputText> </label>
+				<h:inputText id="numberOfCPUs" value="#{jobController.numberOfCPUs}"
+					size="30" required="true">
+					<f:validateLongRange for="numberOfCPUs" minimum="1" maximum="999" />
+				</h:inputText>
+				<h:message for="numberOfCPUs" errorClass="error" />
+				<br /> <label for="workflow"><h:outputText
+						value="#{m['job.workflow']}"></h:outputText> </label>
+				<h:inputText id="workflow" value="#{jobController.workflow}"
+					size="30" required="true">
+				</h:inputText>
+				<h:message for="workflow" errorClass="error" />
+				<br /> <label for="param1"><h:outputText
+						value="#{m['job.param1']}"></h:outputText> </label>
+				<h:inputText id="param1" value="#{jobController.param1}" size="30">
+				</h:inputText>
+				<h:message for="param1" errorClass="error" />
+				<br /> <label for="param2"><h:outputText
+						value="#{m['job.param2']}"></h:outputText> </label>
+				<h:inputText id="param2" value="#{jobController.param2}" size="30">
+				</h:inputText>
+				<h:message for="param2" errorClass="error" />
+				<br /> <label for="param3"><h:outputText
+						value="#{m['job.param3']}"></h:outputText> </label>
+				<h:inputText id="param3" value="#{jobController.param3}" size="30">
+				</h:inputText>
+				<h:message for="param3" errorClass="error" />
+				<br /> <label for="param4"><h:outputText
+						value="#{m['job.param4']}"></h:outputText> </label>
+				<h:inputText id="param4" value="#{jobController.param4}" size="30">
+				</h:inputText>
+				<h:message for="param4" errorClass="error" />
+				<br /> <label for="param5"><h:outputText
+						value="#{m['job.param5']}"></h:outputText> </label>
+				<h:inputText id="param5" value="#{jobController.param5}" size="30">
+				</h:inputText>
+				<h:message for="param5" errorClass="error" />
+				<br />
+			</fieldset>
+
+			<h:commandButton id="job" value="#{m['job.add']}"
+				action="#{jobController.add}" />
+			<h:commandButton id="reset" value="#{m['job.reset']}" type="Reset" />
+
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

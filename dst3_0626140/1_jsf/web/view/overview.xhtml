@@ -1,0 +1,61 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<ui:composition template="template.xhtml">
+	<ui:define name="pageTitle">
+		<h:outputText value="#{m['overview.title']}" />
+	</ui:define>
+	<ui:define name="content">
+		<h1>
+			<h:outputText value="#{m['overview.header']}"></h:outputText>
+		</h1>
+
+		<h:outputText value="#{flash.result}"></h:outputText>
+		<br />
+
+		<h:form>
+			<h:dataTable id="gridsTable" value="${overviewController.allGrids}"
+				var="grid" border="3" cellpadding="5" cellspacing="3"
+				summary="#{m['overview.summary']}">
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{m['overview.gridId']}" />
+					</f:facet>
+					<h:outputText value="#{grid.id}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{m['overview.name']}" />
+					</f:facet>
+					<h:outputText value="#{grid.name}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{m['overview.location']}" />
+					</f:facet>
+					<h:outputText value="#{grid.location}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{m['overview.costsPerCPUMinute']}" />
+					</f:facet>
+					<h:outputText value="#{grid.costsPerCPUMinute}" />
+				</h:column>
+				<h:column>
+					<f:facet name="header">
+						<h:outputText value="#{m['overview.freeCPUs']}" />
+					</f:facet>
+					<h:outputText
+						value="#{overviewController.getFreeCPUsByGrid(grid.id)}" />
+				</h:column>
+				<h:column>
+					<h:commandButton id="addJob" value="#{m['overview.addJob']}"
+						action="#{overviewController.addJob(grid.id)}" />
+				</h:column>
+			</h:dataTable>
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

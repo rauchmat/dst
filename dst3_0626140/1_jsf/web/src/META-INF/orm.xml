@@ -1,6 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <entity-mappings xmlns="http://java.sun.com/xml/ns/persistence/orm"
-                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm orm_2_0.xsd"
-                 version="2.0">
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm_2_0.xsd"
+	version="2.0">
+	<entity class="dst3.model.Grid">
+		<named-query name="hasGrids">
+			<query>select count(grid) from Grid grid</query>
+		</named-query>
+	</entity>
+	<entity class="dst3.model.Grid">
+		<named-query name="allGrids">
+			<query>select grid from Grid grid
+				order by grid.id
+			</query>
+		</named-query>
+	</entity>
+	<entity class="dst3.model.User">
+		<named-query name="usersByCredentials">
+			<query>
+				select user from User user
+				where user.username like :username
+				and user.password like :password
+			</query>
+		</named-query>
+		<named-query name="usersByUsername">
+			<query>
+				select user from User user
+				where user.username like :username
+			</query>
+		</named-query>
+	</entity>
+	<entity class="dst3.model.Computer">
+		<named-query name="freeComputersByGrid">
+			<query>
+				select comp from Computer comp
+				inner join comp.controlledBy
+				cluster
+				inner join cluster.managedBy grid
+				where grid.id = :gridId
+				and
+				not exists (select exec from Execution exec
+				where exec.runsOn = comp
+				and exec.start is not null and exec.end is null)
+				order by comp.CPUs
+				asc
+			</query>
+		</named-query>
+	</entity>
+	<entity class="dst3.model.Execution">
+		<named-query name="notFinishedExecutions">
+			<query>
+				select exec from Execution exec
+				where exec.start is not null
+				and exec.end is null
+			</query>
+		</named-query>
+	</entity>
+	<entity class="dst3.model.Job">
+		<named-query name="finishedJobsByUser">
+			<query>
+				select job from Job job
+				inner join job.executesIn exec
+				inner
+				join job.createdBy user
+				where job.isPaid = false
+				and exec.status =
+				dst3.model.JobStatus.FINISHED
+				and user.username = :username
+				order by
+				exec.start asc
+			</query>
+		</named-query>
+	</entity>
+	<entity class="dst3.model.Job">
+		<named-query name="unfinishedJobsByGridname">
+			<query>
+				select distinct job from Job job
+				inner join job.executesIn exec
+				inner join exec.runsOn comp
+				inner join comp.controlledBy cluster
+				inner join cluster.managedBy grid
+				where grid.name like :gridname
+				and exec.end is null
+				order by exec.start asc
+			</query>
+		</named-query>
+	</entity>
 </entity-mappings>

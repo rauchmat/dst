@@ -1,0 +1,47 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core">
+<h:head>
+	<h:outputStylesheet library="css" name="common.css"></h:outputStylesheet>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title><ui:insert name="pageTitle">
+		</ui:insert>
+	</title>
+</h:head>
+<body>
+	<h:form>
+		<ul class="navigation">
+			<li><h:outputLink value="home.jsf">
+					<h:outputText value="#{m['navigation.home']}"></h:outputText>
+				</h:outputLink></li>
+			<li><h:outputLink value="overview.jsf">
+					<h:outputText value="#{m['navigation.overview']}"></h:outputText>
+				</h:outputLink></li>
+			<li><h:outputLink value="assignment.jsf">
+					<h:outputText value="#{m['navigation.assignment']}"></h:outputText>
+				</h:outputLink></li>
+			<li><h:outputLink value="search.jsf">
+					<h:outputText value="#{m['navigation.search']}"></h:outputText>
+				</h:outputLink></li>
+			<h:panelGroup rendered="#{!sessionController.loggedIn}">
+				<li><h:outputLink value="register.jsf">
+						<h:outputText value="#{m['navigation.register']}"></h:outputText>
+					</h:outputLink></li>
+				<li><h:outputLink value="login.jsf">
+						<h:outputText value="#{m['navigation.login']}"></h:outputText>
+					</h:outputLink></li>
+			</h:panelGroup>
+			<h:panelGroup rendered="#{sessionController.loggedIn}">
+				<li><h:commandLink action="#{sessionController.logout}">
+						<h:outputText value="#{m['navigation.logout']}"></h:outputText>
+					</h:commandLink></li>
+			</h:panelGroup>
+		</ul>
+	</h:form>
+
+	<ui:insert name="content">
+	</ui:insert>
+</body>
+</html>
